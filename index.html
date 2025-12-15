@@ -3,227 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI HUB | Top AI Tools Directory (Gemini, DeepSeek, ChatGPT)</title>
-    <meta name="description" content="Curated list of the best AI tools in 2025. Compare ChatGPT, DeepSeek, Gemini, and more. Customize your own dashboard.">
+    
+    <title>My AI Dashboard - The Minimalist Startpage for AI Creators</title>
+    <meta name="description" content="Your personal, customizable AI dashboard. Organize ChatGPT, Midjourney, Claude, and your own links in one drag-and-drop interface. No login required. Data stays in your browser.">
+    
+    <link rel="canonical" href="https://www.hotai.tools/" />
+
+    <meta property="og:title" content="My AI Dashboard">
+    <meta property="og:description" content="The minimalist startpage for power users. Organize your AI workflow.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.hotai.tools/">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Google Gemini" },
-        { "@type": "ListItem", "position": 2, "name": "DeepSeek" },
-        { "@type": "ListItem", "position": 3, "name": "ChatGPT" }
-      ]
-    }
-    </script>
 
     <style>
         :root {
             --bg: #09090b; --card: #18181b; --border: #27272a;
-            --primary: #8b5cf6;
+            --primary: #8b5cf6; --primary-hover: #7c3aed;
             --text: #f4f4f5; --text-dim: #a1a1aa;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 50px; }
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
 
-        /* 导航 */
+        /* 导航优化 */
         nav {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 5%; border-bottom: 1px solid var(--border);
             position: sticky; top: 0; background: rgba(9,9,11,0.9); backdrop-filter: blur(10px); z-index: 100;
         }
-        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; color: #fff; text-decoration: none;}
         .logo span { color: var(--primary); }
         .actions { display: flex; gap: 10px; }
+        
         button {
             background: var(--card); border: 1px solid var(--border); color: var(--text);
-            padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.2s;
+            padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 500;
         }
-        button:hover { border-color: var(--primary); color: var(--primary); }
-        .btn-primary { background: var(--primary); border-color: var(--primary); color: white; font-weight: bold; }
+        button:hover { border-color: var(--primary); color: var(--text); }
+        .btn-primary { background: var(--primary); border-color: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
 
-        /* 头部 */
-        .toolbar { padding: 40px 5%; text-align: center; }
-        h1 { font-size: 2.5rem; margin-bottom: 20px; }
-        .search-box { max-width: 600px; margin: 0 auto 30px; }
+        /* 头部文案优化 */
+        .toolbar { padding: 60px 5% 40px; text-align: center; }
+        h1 { font-size: 2.8rem; margin-bottom: 15px; letter-spacing: -1px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+        .subtitle { color: var(--text-dim); margin-bottom: 30px; font-size: 1.1rem; }
+        
+        .search-box { max-width: 500px; margin: 0 auto 30px; position: relative; }
         input#search {
             width: 100%; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border);
-            background: var(--card); color: white; font-size: 16px; outline: none;
+            background: var(--card); color: white; font-size: 16px; outline: none; transition: border-color 0.2s;
         }
-        input#search:focus { border-color: var(--primary); }
+        input#search:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2); }
 
-        .filters { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .cat-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+        .filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .cat-btn { font-size: 14px; padding: 6px 14px; border-radius: 20px; background: transparent; border: 1px solid transparent; color: var(--text-dim); }
+        .cat-btn:hover { color: var(--text); background: var(--card); }
+        .cat-btn.active { background: var(--text); color: var(--bg); font-weight: bold; }
 
-        /* 网格 (拖拽区) */
+        /* 网格 */
         .grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px; padding: 0 5%; max-width: 1600px; margin: 0 auto;
+            gap: 20px; padding: 0 5%; max-width: 1400px; margin: 0 auto;
         }
 
-        /* 卡片样式 */
+        /* 卡片优化 */
         .card {
             background: var(--card); border: 1px solid var(--border); border-radius: 12px;
             padding: 20px; display: flex; flex-direction: column; position: relative;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            height: 100%;
         }
-        /* 拖拽时的样式 */
+        .card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5); }
+        
+        /* 拖拽效果 */
         .sortable-ghost { opacity: 0.4; background: #2a2a30; border: 1px dashed var(--primary); }
-        .card:hover { border-color: var(--primary); }
-
-        /* 拖拽手柄 */
+        
         .drag-handle {
-            position: absolute; top: 10px; right: 10px; color: #444; cursor: grab; padding: 5px; z-index: 10;
-            font-size: 18px; line-height: 1; user-select: none;
+            position: absolute; top: 12px; right: 12px; color: #444; cursor: grab; padding: 4px; z-index: 10;
+            opacity: 0; transition: opacity 0.2s;
         }
-        .drag-handle:hover { color: var(--text); }
-        .card:active .drag-handle { cursor: grabbing; }
+        .card:hover .drag-handle { opacity: 1; }
 
-        .card-top { display: flex; align-items: center; margin-bottom: 12px; gap: 10px; }
-        .icon { width: 40px; height: 40px; background: #27272a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .card-top { display: flex; align-items: center; margin-bottom: 12px; gap: 12px; }
+        .icon { width: 44px; height: 44px; background: #27272a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
 
-        /* 排名徽章 */
-        .rank-badge { font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; color: #fff; margin-left: auto; margin-right: 25px; /* 让位给拖拽手柄 */ }
-        .rank-1 { background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; }
-        .rank-2 { background: linear-gradient(45deg, #C0C0C0, #E0E0E0); color: #000; }
-        .rank-3 { background: linear-gradient(45deg, #CD7F32, #A0522D); }
-        .rank-hot { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .rank-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; margin-left: auto; margin-right: 20px;}
+        .rank-1 { background: #eab308; color: #000; }
+        .rank-2 { background: #94a3b8; color: #000; }
+        .rank-hot { background: #ef4444; color: #fff; }
 
-        /* 内容链接区 */
         .card-content { text-decoration: none; color: inherit; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; }
-        .card-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 10px; }
+        .card-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 6px; color: #fff; }
+        .card-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 15px; flex-grow: 1; }
 
-        .tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: auto; }
-        .tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: #333; color: #ccc; }
-        .tag.user { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3); }
+        .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+        .tag { font-size: 11px; padding: 4px 8px; border-radius: 6px; background: #27272a; color: #a1a1aa; font-weight: 500; }
+        .tag.user { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.2); }
 
-        /* 删除按钮 */
         .del-btn {
             position: absolute; bottom: 15px; right: 15px; background: transparent; border: none;
-            color: #ef4444; font-size: 12px; cursor: pointer; opacity: 0; transition: 0.2s;
+            color: #ef4444; font-size: 12px; cursor: pointer; opacity: 0; transition: 0.2s; padding: 5px;
         }
         .card:hover .del-btn { opacity: 1; }
 
         /* 弹窗 */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; display: none; justify-content: center; align-items: center; }
-        .modal { background: var(--card); padding: 30px; border-radius: 16px; width: 90%; max-width: 400px; border: 1px solid var(--border); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal { background: #18181b; padding: 30px; border-radius: 16px; width: 90%; max-width: 420px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .modal h2 { margin-bottom: 20px; color: #fff; }
         .form-group { margin-bottom: 15px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .modal-actions button { flex: 1; }
+        .form-group label { display: block; color: var(--text-dim); margin-bottom: 5px; font-size: 0.9rem;}
+        .form-group input, .form-group select { width: 100%; padding: 12px; background: #09090b; border: 1px solid var(--border); color: white; border-radius: 8px; outline: none; }
+        .form-group input:focus { border-color: var(--primary); }
+        .modal-actions { display: flex; gap: 12px; margin-top: 25px; }
+        .modal-actions button { flex: 1; padding: 12px; }
+
+        footer { text-align: center; color: #52525b; margin-top: 50px; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">AI <span>HUB</span></div>
+        <a href="/" class="logo">AI <span>DASHBOARD</span></a>
         <div class="actions">
-            <button onclick="toggleLang()">EN / CN</button>
-            <button class="btn-primary" onclick="openModal()">+ Add Tool</button>
+            <button class="btn-primary" onclick="openModal()">+ Add Link</button>
         </div>
     </nav>
 
     <div class="toolbar">
-        <h1 id="hero-title">Your Personal AI Dashboard</h1>
+        <h1>Your Personal AI Startpage</h1>
+        <p class="subtitle">Organize your favorite AI tools. Drag to reorder. Data saves to your browser.</p>
+        
         <div class="search-box">
-            <input type="text" id="search" placeholder="Search..." oninput="render()">
+            <input type="text" id="search" placeholder="Search tool name (e.g. 'coding')..." oninput="render()">
         </div>
+
         <div class="filters" id="filters">
-            </div>
-        <div style="font-size:12px; color:#666; margin-top:10px">💡 Tip: Drag cards (⋮⋮) to reorder your dashboard.</div>
+            <button class="cat-btn active" onclick="filterCat('All')">All</button>
+            <button class="cat-btn" onclick="filterCat('Chat')">Chat</button>
+            <button class="cat-btn" onclick="filterCat('Code')">Code</button>
+            <button class="cat-btn" onclick="filterCat('Image')">Image</button>
+            <button class="cat-btn" onclick="filterCat('Video')">Video</button>
+            <button class="cat-btn" onclick="filterCat('Audio')">Audio</button>
+        </div>
     </div>
 
     <div class="grid" id="grid">
         </div>
 
+    <footer>
+        <p>&copy; 2025 HotAI.Tools. All data is stored locally on your device.</p>
+        <button onclick="resetDefaults()" style="margin-top:10px; font-size:12px; padding:4px 8px; opacity:0.5;">Reset Layout</button>
+    </footer>
+
     <div class="modal-overlay" id="addModal">
         <div class="modal">
-            <h2 id="modal-title">Add Custom Website</h2>
-            <div class="form-group"><input type="text" id="add-name" placeholder="Tool Name"></div>
-            <div class="form-group"><input type="text" id="add-link" placeholder="https://example.com"></div>
+            <h2>Add Custom Shortcut</h2>
             <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="add-name" placeholder="e.g. My WordPress Admin">
+            </div>
+            <div class="form-group">
+                <label>URL</label>
+                <input type="text" id="add-link" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
                 <select id="add-cat">
-                    <option value="Chat">ChatBot</option><option value="Code">Code</option>
-                    <option value="Image">Image</option><option value="Video">Video</option>
-                    <option value="Audio">Audio</option><option value="Other">Other</option>
+                    <option value="Chat">Chat</option>
+                    <option value="Code">Code</option>
+                    <option value="Image">Image</option>
+                    <option value="Video">Video</option>
+                    <option value="Audio">Audio</option>
+                    <option value="Other">Other</option>
                 </select>
             </div>
-            <div class="form-group"><input type="text" id="add-desc" placeholder="Description..."></div>
             <div class="modal-actions">
                 <button onclick="closeModal()">Cancel</button>
-                <button class="btn-primary" onclick="addCustomTool()">Save</button>
+                <button class="btn-primary" onclick="addCustomTool()">Add to Dashboard</button>
             </div>
         </div>
     </div>
 
     <script>
-        // === 1. 默认数据 ===
+        // === 1. 默认数据 (全英文，精选全球最火的) ===
+        // 注意：这里我去掉了纯中文工具，DeepSeek因为全球爆火保留了，描述改成了英文
         const defaultTools = [
-            { id: "gemini", name: "Google Gemini", desc: "Google's most capable AI. Multimodal.", icon: "💎", cat: "Chat", link: "https://gemini.google.com", badge: "TOP 1", badgeClass: "rank-1", tags: ["Global"] },
-            { id: "deepseek", name: "DeepSeek", desc: "China's #1 open-source model. Math genius.", icon: "🦈", cat: "Code", link: "https://chat.deepseek.com", badge: "TOP 2", badgeClass: "rank-2", tags: ["China"] },
-            { id: "gpt", name: "ChatGPT", desc: "The OG AI. GPT-4o is powerful.", icon: "🧠", cat: "Chat", link: "https://chat.openai.com", badge: "TOP 3", badgeClass: "rank-3", tags: ["Global"] },
-            { id: "candy", name: "Candy.ai (NSFW)", desc: "Uncensored AI Character Chat.", icon: "💋", cat: "Chat", link: "https://candy.ai", badge: "HOT", badgeClass: "rank-hot", tags: ["Global", "Ad"] },
-            { id: "claude", name: "Claude 3", desc: "Most human-like writer.", icon: "📜", cat: "Chat", link: "https://claude.ai", tags: ["Global"] },
-            { id: "kimi", name: "Kimi", desc: "Long context master (200k+ words).", icon: "🌙", cat: "Chat", link: "https://kimi.moonshot.cn", tags: ["China"] },
-            { id: "midjourney", name: "Midjourney", desc: "Best artistic image generator.", icon: "🎨", cat: "Image", link: "https://midjourney.com", tags: ["Global"] },
-            { id: "sora", name: "Sora (Info)", desc: "OpenAI's video model.", icon: "🎬", cat: "Video", link: "https://openai.com/sora", tags: ["Global"] },
-            { id: "runway", name: "Runway", desc: "AI video editor & generator.", icon: "🎥", cat: "Video", link: "https://runwayml.com", tags: ["Global"] },
-            { id: "cursor", name: "Cursor", desc: "AI-first Code Editor.", icon: "🖱️", cat: "Code", link: "https://cursor.sh", tags: ["Global"] },
-            { id: "suno", name: "Suno", desc: "Make songs with lyrics.", icon: "🎵", cat: "Audio", link: "https://suno.com", tags: ["Global"] }
+            { id: "gpt", name: "ChatGPT", desc: "The standard for AI chat. Great for general writing.", icon: "🧠", cat: "Chat", link: "https://chat.openai.com", badge: "TOP 1", badgeClass: "rank-1" },
+            { id: "claude", name: "Claude 3.5", desc: "Best for coding & nuanced writing. Human-like.", icon: "📜", cat: "Chat", link: "https://claude.ai", badge: "TOP 2", badgeClass: "rank-2" },
+            { id: "deepseek", name: "DeepSeek", desc: "Top open-source model. Excellent at math & code.", icon: "🦈", cat: "Code", link: "https://chat.deepseek.com", badge: "HOT", badgeClass: "rank-hot" },
+            { id: "gemini", name: "Google Gemini", desc: "Multimodal AI. Deep integration with Google ecosystem.", icon: "💎", cat: "Chat", link: "https://gemini.google.com" },
+            { id: "midjourney", name: "Midjourney", desc: "The best artistic image generator currently available.", icon: "🎨", cat: "Image", link: "https://midjourney.com" },
+            { id: "perplexity", name: "Perplexity", desc: "AI Search Engine. Better than Google for answers.", icon: "🔍", cat: "Chat", link: "https://www.perplexity.ai" },
+            { id: "cursor", name: "Cursor", desc: "AI-first Code Editor (VS Code Fork).", icon: "🖱️", cat: "Code", link: "https://cursor.sh" },
+            { id: "suno", name: "Suno", desc: "Generate full songs with lyrics in seconds.", icon: "🎵", cat: "Audio", link: "https://suno.com" },
+            { id: "runway", name: "Runway", desc: "Professional AI video editing suite.", icon: "🎥", cat: "Video", link: "https://runwayml.com" },
+            { id: "elevenlabs", name: "ElevenLabs", desc: "Most realistic AI text-to-speech voice generator.", icon: "🔊", cat: "Audio", link: "https://elevenlabs.io" }
         ];
 
-        // === 2. 状态管理 ===
-        let customTools = JSON.parse(localStorage.getItem('my_ai_tools')) || [];
-        let savedOrder = JSON.parse(localStorage.getItem('ai_tools_order')) || []; // 存储ID顺序
+        // === 2. 核心逻辑 ===
+        let customTools = JSON.parse(localStorage.getItem('my_custom_tools')) || [];
+        // 如果用户以前没存过顺序，就用默认的ID列表
+        let savedOrder = JSON.parse(localStorage.getItem('my_tools_order')) || defaultTools.map(t => t.id);
         let currentCat = 'All';
-        let isCN = false;
-
-        // 获取并排序所有工具
-        function getSortedTools() {
-            let all = [...customTools, ...defaultTools];
-
-            // 如果有保存的顺序，按保存的ID排序
-            if (savedOrder.length > 0) {
-                all.sort((a, b) => {
-                    const idxA = savedOrder.indexOf(a.id.toString());
-                    const idxB = savedOrder.indexOf(b.id.toString());
-                    // 如果ID不在保存列表里（新加的），放到最后
-                    return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
-                });
-            }
-            return all;
-        }
 
         function init() {
-            renderFilters();
             render();
             initSortable();
         }
 
-        // 初始化拖拽库
-        function initSortable() {
-            const grid = document.getElementById('grid');
-            new Sortable(grid, {
-                animation: 150,
-                handle: '.drag-handle', // 只能拖这个手柄
-                ghostClass: 'sortable-ghost',
-                onEnd: function (evt) {
-                    // 拖拽结束后，保存新顺序
-                    saveOrder();
-                }
+        // 核心：合并默认工具和自定义工具，并按保存的顺序排序
+        function getSortedTools() {
+            let all = [...defaultTools, ...customTools];
+            
+            // 按照 savedOrder 的顺序重排
+            all.sort((a, b) => {
+                let idxA = savedOrder.indexOf(a.id.toString());
+                let idxB = savedOrder.indexOf(b.id.toString());
+                
+                // 如果是新加的工具（还没在顺序表里），放到最前面
+                if (idxA === -1) idxA = -1;
+                if (idxB === -1) idxB = -1;
+                
+                // 都在列表里，按索引比；都不在，按时间比；一个在，在的排后面
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                if (idxA === -1 && idxB !== -1) return 1; // 新工具放后面(或前面，看你想怎么逻辑)
+                if (idxA !== -1 && idxB === -1) return -1;
+                return 0;
             });
-        }
-
-        // 保存顺序到 LocalStorage
-        function saveOrder() {
-            const cards = document.querySelectorAll('.card');
-            const newOrder = Array.from(cards).map(card => card.getAttribute('data-id'));
-            localStorage.setItem('ai_tools_order', JSON.stringify(newOrder));
-            savedOrder = newOrder; // 更新内存变量
+            return all;
         }
 
         function render() {
@@ -237,26 +244,25 @@
                 const matchSearch = t.name.toLowerCase().includes(searchVal) || t.desc.toLowerCase().includes(searchVal);
 
                 if(matchCat && matchSearch) {
-                    const isCustom = t.isCustom;
-                    const card = document.createElement('div'); // 外层是 div，为了包住 handle 和 content
+                    const isCustom = !!t.isCustom;
+                    const card = document.createElement('div');
                     card.className = 'card';
-                    card.setAttribute('data-id', t.id); // 用于排序识别
+                    card.setAttribute('data-id', t.id);
 
                     // 徽章
                     let badgeHtml = t.badge ? `<span class="rank-badge ${t.badgeClass}">${t.badge}</span>` : '';
-
+                    
                     // 标签
-                    let tagsHtml = '';
-                    if(isCustom) tagsHtml += `<span class="tag user">My Tool</span>`;
-                    if(t.tags) t.tags.forEach(tag => tagsHtml += `<span class="tag">${tag}</span>`);
+                    let tagsHtml = `<span class="tag">${t.cat}</span>`;
+                    if(isCustom) tagsHtml += `<span class="tag user">My Link</span>`;
 
                     // 删除按钮
-                    const delBtn = isCustom ? `<button class="del-btn" onclick="deleteTool(${t.id})">Remove</button>` : '';
+                    const delBtn = isCustom ? `<button class="del-btn" onclick="deleteTool('${t.id}')">✕</button>` : '';
 
                     card.innerHTML = `
-                        <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
+                        <div class="drag-handle">⋮⋮</div>
                         ${delBtn}
-                        <a href="${t.link}" target="_blank" rel="nofollow noopener" class="card-content">
+                        <a href="${t.link}" target="_blank" rel="noopener" class="card-content">
                             <div class="card-top">
                                 <div class="icon">${t.icon}</div>
                                 ${badgeHtml}
@@ -271,29 +277,29 @@
             });
         }
 
-        // === 其他逻辑 (语言、添加、删除) ===
-        function toggleLang() {
-            isCN = !isCN;
-            document.getElementById('hero-title').innerText = isCN ? "你的专属 AI 仪表盘" : "Your Personal AI Dashboard";
-            document.getElementById('search').placeholder = isCN ? "搜索工具..." : "Search...";
-            document.getElementById('modal-title').innerText = isCN ? "添加自定义网址" : "Add Custom Website";
-            renderFilters(); render();
+        function initSortable() {
+            const grid = document.getElementById('grid');
+            new Sortable(grid, {
+                animation: 150,
+                handle: '.drag-handle',
+                ghostClass: 'sortable-ghost',
+                onEnd: function () {
+                    // 拖拽结束后，获取新的DOM顺序并保存
+                    const cards = document.querySelectorAll('.card');
+                    const newOrder = Array.from(cards).map(card => card.getAttribute('data-id'));
+                    localStorage.setItem('my_tools_order', JSON.stringify(newOrder));
+                    savedOrder = newOrder;
+                }
+            });
         }
 
-        function renderFilters() {
-            const cats = isCN
-                ? { All: "全部", Chat: "对话", Code: "编程", Image: "绘图", Video: "视频", Audio: "音乐" }
-                : { All: "All", Chat: "Chat", Code: "Code", Image: "Image", Video: "Video", Audio: "Audio" };
-
-            const div = document.getElementById('filters');
-            div.innerHTML = '';
-            Object.keys(cats).forEach(key => {
-                const btn = document.createElement('button');
-                btn.className = `cat-btn ${currentCat === key ? 'active' : ''}`;
-                btn.innerText = cats[key];
-                btn.onclick = () => { currentCat = key; renderFilters(); render(); };
-                div.appendChild(btn);
+        // === 交互逻辑 ===
+        function filterCat(cat) {
+            currentCat = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === cat || (cat === 'All' && btn.innerText === 'All'));
             });
+            render();
         }
 
         function openModal() { document.getElementById('addModal').style.display = 'flex'; }
@@ -301,43 +307,63 @@
 
         function addCustomTool() {
             const name = document.getElementById('add-name').value;
-            const link = document.getElementById('add-link').value;
-            const desc = document.getElementById('add-desc').value;
+            let link = document.getElementById('add-link').value;
             const cat = document.getElementById('add-cat').value;
-            if(!name || !link) return alert("Name and Link required!");
+
+            if(!name || !link) return alert("Please enter a name and URL.");
+            if(!link.startsWith('http')) link = 'https://' + link;
 
             const newTool = {
-                id: Date.now(),
-                name: name, desc: desc || "Custom Tool", icon: "📌",
-                link: link.startsWith('http') ? link : 'https://' + link,
-                cat: cat, isCustom: true
+                id: "custom_" + Date.now(),
+                name: name,
+                desc: "Custom Shortcut",
+                icon: "📌",
+                link: link,
+                cat: cat,
+                isCustom: true
             };
-            customTools.unshift(newTool);
-            localStorage.setItem('my_ai_tools', JSON.stringify(customTools));
-            closeModal(); render();
+
+            customTools.unshift(newTool); // 加到数组开头
+            savedOrder.unshift(newTool.id); // 加到排序开头
+
+            localStorage.setItem('my_custom_tools', JSON.stringify(customTools));
+            localStorage.setItem('my_tools_order', JSON.stringify(savedOrder));
+            
+            closeModal();
+            render();
+            // 清空表单
             document.getElementById('add-name').value = '';
             document.getElementById('add-link').value = '';
         }
 
         function deleteTool(id) {
-            if(confirm("Delete this bookmark?")) {
+            if(confirm("Remove this shortcut?")) {
                 customTools = customTools.filter(t => t.id !== id);
-                localStorage.setItem('my_ai_tools', JSON.stringify(customTools));
+                savedOrder = savedOrder.filter(oid => oid !== id);
+                
+                localStorage.setItem('my_custom_tools', JSON.stringify(customTools));
+                localStorage.setItem('my_tools_order', JSON.stringify(savedOrder));
                 render();
+            }
+        }
+
+        function resetDefaults() {
+            if(confirm("Reset all layout and delete custom tools?")) {
+                localStorage.removeItem('my_custom_tools');
+                localStorage.removeItem('my_tools_order');
+                location.reload();
             }
         }
 
         init();
     </script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-7VMVZ5H7YK"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-7VMVZ5H7YK');
-</script>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7VMVZ5H7YK"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-7VMVZ5H7YK');
+    </script>
 </body>
-
 </html>
