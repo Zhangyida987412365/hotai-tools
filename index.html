@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>My AI Dashboard - The Minimalist Startpage for AI Creators</title>
-    <meta name="description" content="Your personal, customizable AI dashboard. Organize ChatGPT, Midjourney, Claude, and your own links in one drag-and-drop interface. No login required. Data stays in your browser.">
-    
+    <meta name="description"
+        content="Your personal, customizable AI dashboard. Organize ChatGPT, Midjourney, Claude, and your own links in one drag-and-drop interface. No login required. Data stays in your browser.">
+
     <link rel="canonical" href="https://www.hotai.tools/" />
 
     <meta property="og:title" content="My AI Dashboard">
@@ -18,123 +20,415 @@
 
     <style>
         :root {
-            --bg: #09090b; --card: #18181b; --border: #27272a;
-            --primary: #8b5cf6; --primary-hover: #7c3aed;
-            --text: #f4f4f5; --text-dim: #a1a1aa;
+            --bg: #09090b;
+            --card: #18181b;
+            --border: #27272a;
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --text: #f4f4f5;
+            --text-dim: #a1a1aa;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
 
         /* 导航优化 */
         nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 5%; border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; background: rgba(9,9,11,0.9); backdrop-filter: blur(10px); z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 100;
         }
-        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; color: #fff; text-decoration: none;}
-        .logo span { color: var(--primary); }
-        .actions { display: flex; gap: 10px; align-items: center; }
-        
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         button {
-            background: var(--card); border: 1px solid var(--border); color: var(--text);
-            padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 500;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
         }
-        button:hover { border-color: var(--primary); color: var(--text); }
-        .btn-primary { background: var(--primary); border-color: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-hover); }
+
+        button:hover {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
 
         /* 头部文案优化 */
-        .toolbar { padding: 60px 5% 40px; text-align: center; }
-        h1 { font-size: 2.8rem; margin-bottom: 15px; letter-spacing: -1px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;}
-        .subtitle { color: var(--text-dim); margin-bottom: 30px; font-size: 1.1rem; }
-        
-        .search-box { max-width: 500px; margin: 0 auto 30px; position: relative; }
-        input#search {
-            width: 100%; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border);
-            background: var(--card); color: white; font-size: 16px; outline: none; transition: border-color 0.2s;
+        .toolbar {
+            padding: 60px 5% 40px;
+            text-align: center;
         }
-        input#search:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2); }
 
-        .filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .cat-btn { font-size: 14px; padding: 6px 14px; border-radius: 20px; background: transparent; border: 1px solid transparent; color: var(--text-dim); }
-        .cat-btn:hover { color: var(--text); background: var(--card); }
-        .cat-btn.active { background: var(--text); color: var(--bg); font-weight: bold; }
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        input#search {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input#search:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .cat-btn {
+            font-size: 14px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+        }
+
+        .cat-btn:hover {
+            color: var(--text);
+            background: var(--card);
+        }
+
+        .cat-btn.active {
+            background: var(--text);
+            color: var(--bg);
+            font-weight: bold;
+        }
 
         /* 网格 */
         .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px; padding: 0 5%; max-width: 1400px; margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 0 5%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         /* 卡片优化 */
         .card {
-            background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-            padding: 20px; display: flex; flex-direction: column; position: relative;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
             transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
             height: 100%;
         }
-        .card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5); }
-        
-        /* 拖拽效果 */
-        .sortable-ghost { opacity: 0.4; background: #2a2a30; border: 1px dashed var(--primary); }
-        
-        .drag-handle {
-            position: absolute; top: 12px; right: 12px; color: #444; cursor: grab; padding: 4px; z-index: 10;
-            opacity: 0; transition: opacity 0.2s;
+
+        .card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
         }
-        .card:hover .drag-handle { opacity: 1; }
 
-        .card-top { display: flex; align-items: center; margin-bottom: 12px; gap: 12px; }
-        .icon { width: 44px; height: 44px; background: #27272a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; overflow: hidden; }
-        .icon img { width: 100%; height: 100%; object-fit: cover; }
+        /* 拖拽效果 */
+        .sortable-ghost {
+            opacity: 0.4;
+            background: #2a2a30;
+            border: 1px dashed var(--primary);
+        }
 
-        .rank-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; margin-left: auto; margin-right: 20px;}
-        .rank-1 { background: #eab308; color: #000; }
-        .rank-2 { background: #94a3b8; color: #000; }
-        .rank-hot { background: #ef4444; color: #fff; }
+        .drag-handle {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            color: #444;
+            cursor: grab;
+            padding: 4px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
 
-        .card-content { text-decoration: none; color: inherit; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 6px; color: #fff; }
-        .card-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 15px; flex-grow: 1; }
+        .card:hover .drag-handle {
+            opacity: 1;
+        }
 
-        .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
-        .tag { font-size: 11px; padding: 4px 8px; border-radius: 6px; background: #27272a; color: #a1a1aa; font-weight: 500; }
-        .tag.user { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.2); }
+        .card-top {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+
+        .icon {
+            width: 44px;
+            height: 44px;
+            background: #27272a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .rank-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-left: auto;
+            margin-right: 20px;
+        }
+
+        .rank-1 {
+            background: #eab308;
+            color: #000;
+        }
+
+        .rank-2 {
+            background: #94a3b8;
+            color: #000;
+        }
+
+        .rank-hot {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .card-content {
+            text-decoration: none;
+            color: inherit;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #27272a;
+            color: #a1a1aa;
+            font-weight: 500;
+        }
+
+        .tag.user {
+            background: rgba(139, 92, 246, 0.15);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
 
         .del-btn {
-            position: absolute; bottom: 15px; right: 15px; background: transparent; border: none;
-            color: #ef4444; font-size: 12px; cursor: pointer; opacity: 0; transition: 0.2s; padding: 5px;
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.2s;
+            padding: 5px;
         }
-        .card:hover .del-btn { opacity: 1; }
+
+        .card:hover .del-btn {
+            opacity: 1;
+        }
 
         /* 弹窗 */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal { background: #18181b; padding: 30px; border-radius: 16px; width: 90%; max-width: 420px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
-        .modal h2 { margin-bottom: 20px; color: #fff; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; color: var(--text-dim); margin-bottom: 5px; font-size: 0.9rem;}
-        .form-group input, .form-group select { width: 100%; padding: 12px; background: #09090b; border: 1px solid var(--border); color: white; border-radius: 8px; outline: none; }
-        .form-group input:focus { border-color: var(--primary); }
-        .modal-actions { display: flex; gap: 12px; margin-top: 25px; }
-        .modal-actions button { flex: 1; padding: 12px; }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
 
-        footer { text-align: center; color: #52525b; margin-top: 50px; font-size: 14px; }
+        .modal {
+            background: #18181b;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-dim);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: #09090b;
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+        }
+
+        footer {
+            text-align: center;
+            color: #52525b;
+            margin-top: 50px;
+            font-size: 14px;
+        }
     </style>
 </head>
+
 <body>
 
     <nav>
         <a href="/" class="logo" id="t_logo">AI <span>DASHBOARD</span></a>
         <div class="actions">
-            <button id="langToggleBtn" onclick="toggleLanguage()" style="background:transparent; border:none; padding:8px;">🇺🇸 EN</button>
+            <button id="langToggleBtn" onclick="toggleLanguage()"
+                style="background:transparent; border:none; padding:8px;">🇺🇸 EN</button>
             <button class="btn-primary" onclick="openModal()" id="t_addLink">+ Add Link</button>
         </div>
     </nav>
 
     <div class="toolbar">
         <h1 id="t_title">Your Personal AI Startpage</h1>
-        <p class="subtitle" id="t_subtitle">Organize your favorite AI tools. Drag to reorder. Data saves to your browser.</p>
-        
+        <p class="subtitle" id="t_subtitle">Organize your favorite AI tools. Drag to reorder. Data saves to your
+            browser.</p>
+
         <div class="search-box">
             <input type="text" id="search" placeholder="Search tool name (e.g. 'coding')..." oninput="render()">
         </div>
@@ -151,7 +445,7 @@
     </div>
 
     <div class="grid" id="grid">
-        </div>
+    </div>
 
     <!-- SEO: 静态链接供爬虫抓取 -->
     <noscript>
@@ -172,7 +466,8 @@
             <a href="https://suno.com" title="Suno">Suno - Generate full songs</a>
             <a href="https://runwayml.com" title="Runway">Runway - AI video editing</a>
             <a href="https://elevenlabs.io" title="ElevenLabs">ElevenLabs - AI voice generator</a>
-            <a href="https://deepmind.google/technologies/gemini/" title="Antigravity">Antigravity - Google DeepMind's agentic AI</a>
+            <a href="https://deepmind.google/technologies/gemini/" title="Antigravity">Antigravity - Google DeepMind's
+                agentic AI</a>
             <a href="https://www.anthropic.com/claude-code" title="Claude Code">Claude Code - Anthropic CLI agent</a>
             <a href="https://github.com/features/copilot" title="GitHub Copilot">GitHub Copilot - AI developer tool</a>
             <a href="https://gamma.app" title="Gamma">Gamma - AI presentation tool</a>
@@ -187,11 +482,15 @@
     <footer>
         <p id="t_footer">&copy; 2025 HotAI.Tools. All data is stored locally on your device.</p>
         <div style="margin-top:12px; font-size:14px; color:#a1a1aa;">
-            <span id="t_contact">Contact & Sponsorship:</span> <a href="mailto:yunfengyunyang@gmail.com" style="color:#8b5cf6; text-decoration:none;">yunfengyunyang@gmail.com</a>
+            <span id="t_contact">Contact & Sponsorship:</span> <a href="mailto:yunfengyunyang@gmail.com"
+                style="color:#8b5cf6; text-decoration:none;">yunfengyunyang@gmail.com</a>
             <span style="margin: 0 10px; opacity:0.5;">|</span>
-            <a href="/mail.html" target="_blank" style="color:#8b5cf6; text-decoration:none;" id="t_mailLink">Perplexity Code Receiver</a>
+            <a href="/mail.html" target="_blank" style="color:#8b5cf6; text-decoration:none;" id="t_mailLink">Perplexity
+                Code Receiver</a>
         </div>
-        <button onclick="resetDefaults()" id="t_resetLayout" style="margin-top:15px; font-size:12px; padding:4px 8px; opacity:0.5; background:transparent; border:1px solid #3f3f46;">Reset Layout</button>
+        <button onclick="resetDefaults()" id="t_resetLayout"
+            style="margin-top:15px; font-size:12px; padding:4px 8px; opacity:0.5; background:transparent; border:1px solid #3f3f46;">Reset
+            Layout</button>
     </footer>
 
     <div class="modal-overlay" id="addModal">
@@ -326,7 +625,7 @@
         function applyLanguage() {
             const t = translations[currentLang];
             document.getElementById('langToggleBtn').innerHTML = currentLang === 'en' ? '🇨🇳 中 / EN' : '🇺🇸 EN / 中';
-            
+
             document.getElementById('t_logo').innerHTML = t.logo;
             document.getElementById('t_addLink').innerText = t.addLink;
             document.getElementById('t_title').innerText = t.title;
@@ -334,8 +633,8 @@
             document.getElementById('search').placeholder = t.searchPlaceholder;
             document.getElementById('t_footer').innerHTML = t.footer;
             document.getElementById('t_resetLayout').innerText = t.resetLayout;
-            if(document.getElementById('t_contact')) document.getElementById('t_contact').innerText = t.contact;
-            if(document.getElementById('t_mailLink')) document.getElementById('t_mailLink').innerText = t.mailLink;
+            if (document.getElementById('t_contact')) document.getElementById('t_contact').innerText = t.contact;
+            if (document.getElementById('t_mailLink')) document.getElementById('t_mailLink').innerText = t.mailLink;
 
             document.getElementById('t_modalTitle').innerText = t.modalTitle;
             document.getElementById('t_modalName').innerText = t.modalName;
@@ -356,7 +655,7 @@
             Array.from(select.options).forEach(opt => {
                 opt.text = t.cats[opt.value] || opt.value;
             });
-            
+
             document.documentElement.lang = currentLang;
         }
 
@@ -365,9 +664,10 @@
             try {
                 const domain = new URL(url).hostname;
                 const letter = name.charAt(0).toUpperCase();
-                return `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=128" alt="${name} Logo" onerror="this.onerror=null; this.outerHTML='<span style=\\'font-size:24px; font-weight:bold; color:#fff;\\'>${letter}</span>'">`;
+                // 完美解决方案：请求 Vercel 自建的跳板代理层加载 Google Icon，反向突破 GFW
+                return `<img src="/api/favicon?domain=${domain}" alt="${name} Logo" onerror="this.onerror=null; this.outerHTML='<span style=\\'font-size:24px; font-weight:bold; color:#fff;\\'>${letter}</span>'">`;
             } catch (e) {
-                return `<span style="font-size:24px; font-weight:bold; color:#fff;">${name.charAt(0).toUpperCase()}</span>`; 
+                return `<span style="font-size:24px; font-weight:bold; color:#fff;">${name.charAt(0).toUpperCase()}</span>`;
             }
         }
 
@@ -395,10 +695,10 @@
 
             tools.forEach((tool) => {
                 const matchCat = currentCat === 'All' || tool.cat === currentCat;
-                const desc = currentLang === 'zh' ? (tool.descZh || tool.desc) : tool.desc; 
+                const desc = currentLang === 'zh' ? (tool.descZh || tool.desc) : tool.desc;
                 const matchSearch = tool.name.toLowerCase().includes(searchVal) || desc.toLowerCase().includes(searchVal);
 
-                if(matchCat && matchSearch) {
+                if (matchCat && matchSearch) {
                     const isCustom = !!tool.isCustom;
                     const card = document.createElement('div');
                     card.className = 'card';
@@ -406,9 +706,9 @@
 
                     let badgeText = tool.badge && translations[currentLang].badge[tool.badge] ? translations[currentLang].badge[tool.badge] : tool.badge;
                     let badgeHtml = badgeText ? `<span class="rank-badge ${tool.badgeClass}">${badgeText}</span>` : '';
-                    
+
                     let tagsHtml = `<span class="tag">${t.cats[tool.cat] || tool.cat}</span>`;
-                    if(isCustom) tagsHtml += `<span class="tag user">${t.myLink}</span>`;
+                    if (isCustom) tagsHtml += `<span class="tag user">${t.myLink}</span>`;
 
                     const delBtn = isCustom ? `<button class="del-btn" onclick="deleteTool('${tool.id}')">✕</button>` : '';
                     const iconHtml = getFavicon(tool.link, tool.name);
@@ -465,8 +765,8 @@
             let link = document.getElementById('add-link').value;
             const cat = document.getElementById('add-cat').value;
 
-            if(!name || !link) return alert(currentLang === 'zh' ? "请输入名称和地址。" : "Please enter a name and URL.");
-            if(!link.startsWith('http')) link = 'https://' + link;
+            if (!name || !link) return alert(currentLang === 'zh' ? "请输入名称和地址。" : "Please enter a name and URL.");
+            if (!link.startsWith('http')) link = 'https://' + link;
 
             const newTool = {
                 id: "custom_" + Date.now(),
@@ -483,7 +783,7 @@
 
             localStorage.setItem('my_custom_tools', JSON.stringify(customTools));
             localStorage.setItem('my_tools_order', JSON.stringify(savedOrder));
-            
+
             closeModal();
             render();
             document.getElementById('add-name').value = '';
@@ -492,7 +792,7 @@
 
         function deleteTool(id) {
             const confirmMsg = currentLang === 'zh' ? "确定删除此工具吗？" : "Remove this shortcut?";
-            if(confirm(confirmMsg)) {
+            if (confirm(confirmMsg)) {
                 customTools = customTools.filter(t => t.id !== id);
                 savedOrder = savedOrder.filter(oid => oid !== id);
                 localStorage.setItem('my_custom_tools', JSON.stringify(customTools));
@@ -503,7 +803,7 @@
 
         function resetDefaults() {
             const confirmMsg = currentLang === 'zh' ? "将重置所有布局并删除自定义工具，确定吗？" : "Reset all layout and delete custom tools?";
-            if(confirm(confirmMsg)) {
+            if (confirm(confirmMsg)) {
                 localStorage.removeItem('my_custom_tools');
                 localStorage.removeItem('my_tools_order');
                 location.reload();
@@ -512,13 +812,14 @@
 
         init();
     </script>
-    
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7VMVZ5H7YK"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-7VMVZ5H7YK');
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-7VMVZ5H7YK');
     </script>
 </body>
+
 </html>

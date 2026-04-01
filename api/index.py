@@ -3,8 +3,10 @@ import imaplib
 import email
 from email.header import decode_header
 import re
+import urllib.request
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 
 app = FastAPI()
 
@@ -23,6 +25,18 @@ def extract_verification_code(text):
     if match:
         return match.group(0)
     return None
+
+@app.get("/api/favicon")
+def proxy_favicon(domain: str):
+    try:
+        url = f"https://www.google.com/s2/favicons?domain={domain}&sz=128"
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            content = response.read()
+            c_type = response.headers.get('Content-Type', 'image/png')
+        return Response(content=content, media_type=c_type, headers={"Cache-Control": "public, max-age=604800, s-maxage=604800"})
+    except Exception:
+        return Response(status_code=404)
 
 @app.get("/api/codes")
 def get_verification_codes():
