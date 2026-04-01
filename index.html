@@ -174,10 +174,10 @@
             font-weight: bold;
         }
 
-        /* 网格 */
+        /* 网格（Flexbox —— 与 SortableJS 位移动画完美配合） */
         .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 20px;
             padding: 0 5%;
             max-width: 1400px;
@@ -194,7 +194,9 @@
             flex-direction: column;
             position: relative;
             transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-            height: 100%;
+            width: 300px;
+            flex-grow: 1;
+            max-width: 400px;
         }
 
         .card:hover {
@@ -203,11 +205,18 @@
             box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
         }
 
-        /* 拖拽效果 —— 极简纯净，不干扰原生位移动画 */
+        /* 拖拽效果 */
         .sortable-ghost {
             opacity: 0.15;
             border: 2px dashed var(--primary);
             border-radius: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .card {
+                width: 100%;
+                max-width: none;
+            }
         }
 
         .drag-handle {
@@ -713,7 +722,6 @@
                     const delBtn = isCustom ? `<button class="del-btn" onclick="deleteTool('${tool.id}')">✕</button>` : '';
                     const iconHtml = getFavicon(tool.link, tool.name);
 
-                    // 针对 Perplexity 的特殊体验：并列打开验证码接收中控页
                     const extraAction = tool.id === 'perplexity' ? `onclick="window.open('/mail.html', '_blank')"` : '';
 
                     card.innerHTML = `
@@ -732,13 +740,15 @@
                     grid.appendChild(card);
                 }
             });
+            // 重新初始化拖拽（每次 render 后重建 DOM 需要重绑）
+            initSortable();
         }
 
         function initSortable() {
             const grid = document.getElementById('grid');
             new Sortable(grid, {
                 animation: 300,
-                easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+                easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
                 handle: '.drag-handle',
                 ghostClass: 'sortable-ghost',
                 onEnd: function () {
