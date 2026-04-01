@@ -83,10 +83,19 @@ def get_verification_codes():
                 date_str = msg.get("Date", "")
                 try:
                     from email.utils import parsedate_to_datetime
-                    from datetime import timezone, timedelta
+                    from datetime import datetime, timezone, timedelta
                     dt = parsedate_to_datetime(date_str)
                     bj_tz = timezone(timedelta(hours=8))
-                    formatted_time = dt.astimezone(bj_tz).strftime("%m-%d %H:%M:%S")
+                    email_bj_time = dt.astimezone(bj_tz)
+                    now_bj_time = datetime.now(bj_tz)
+                    diff_minutes = (now_bj_time - email_bj_time).total_seconds() / 60
+                    formatted_time = email_bj_time.strftime("%m-%d %H:%M:%S")
+
+                    # 如果最后一封邮件距现在超过 10 分钟，视为过期
+                    if diff_minutes > 10:
+                        mail.close()
+                        mail.logout()
+                        return {"status": "success", "codes": [], "expired": True, "message": "暂未发送验证码（最近一封已超过10分钟）"}
                 except Exception:
                     formatted_time = date_str
                 
