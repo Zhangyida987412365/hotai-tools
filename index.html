@@ -214,9 +214,9 @@
         }
 
         .sortable-chosen {
-            box-shadow: 0 0 0 2px var(--primary);
-            transform: scale(1.02) !important;
-            transition: all 0.2s ease;
+            box-shadow: 0 0 0 3px var(--primary);
+            transform: scale(0.95) !important; /* 被抓取的瞬间不是呆板平移，而是向内 Q弹收缩，营造强大的果冻挤压感蓄力 */
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .sortable-drag {
@@ -755,8 +755,8 @@
         function initSortable() {
             const grid = document.getElementById('grid');
             new Sortable(grid, {
-                animation: 350, // 完美还原 iOS 阻尼动画时长
-                easing: "cubic-bezier(0.2, 0, 0, 1)", // 贴近苹果桌面重排的极速起手+丝滑降速阻尼曲线
+                animation: 500, // 动画时长拉到 0.5 秒大关，给极其夸张的果冻弹簧特效留出宽裕的视觉回弹时间
+                easing: "cubic-bezier(0.34, 1.56, 0.64, 1)", // 【全网失传配置】打破极限！引入y轴超过1的过冲（Overshoot）超强回力重排弹簧曲线，卡片互挤时必定Q弹震荡回缩！
                 handle: '.drag-handle',
                 ghostClass: 'sortable-ghost',
                 chosenClass: 'sortable-chosen',
