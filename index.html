@@ -664,8 +664,8 @@
             try {
                 const domain = new URL(url).hostname;
                 const letter = name.charAt(0).toUpperCase();
-                // 完美解决方案：请求 Vercel 自建的跳板代理层加载 Google Icon，反向突破 GFW
-                return `<img src="/api/favicon?domain=${domain}" alt="${name} Logo" onerror="this.onerror=null; this.outerHTML='<span style=\\'font-size:24px; font-weight:bold; color:#fff;\\'>${letter}</span>'">`;
+                // 撤销反代，恢复纯净官方直连（需科学上网加载图像，断网优雅回退）
+                return `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=128" alt="${name} Logo" onerror="this.onerror=null; this.outerHTML='<span style=\\'font-size:24px; font-weight:bold; color:#fff;\\'>${letter}</span>'">`;
             } catch (e) {
                 return `<span style="font-size:24px; font-weight:bold; color:#fff;">${name.charAt(0).toUpperCase()}</span>`;
             }
