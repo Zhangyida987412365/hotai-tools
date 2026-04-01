@@ -203,11 +203,30 @@
             box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
         }
 
-        /* 拖拽效果 */
+        /* 拖拽效果超强进化 */
         .sortable-ghost {
-            opacity: 0.4;
-            background: #2a2a30;
-            border: 1px dashed var(--primary);
+            opacity: 0.1;
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px dashed var(--primary);
+            transform: scale(0.96);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            border-radius: 12px;
+        }
+
+        .sortable-chosen {
+            box-shadow: 0 0 0 2px var(--primary);
+            transform: scale(1.02) !important;
+            transition: all 0.2s ease;
+        }
+
+        .sortable-drag {
+            opacity: 1 !important;
+            background: var(--card) !important;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9), 0 0 0 2px var(--primary) !important;
+            transform: scale(1.05) rotate(3deg) !important;
+            cursor: grabbing !important;
+            z-index: 9999 !important;
+            border-radius: 12px;
         }
 
         .drag-handle {
@@ -737,9 +756,14 @@
         function initSortable() {
             const grid = document.getElementById('grid');
             new Sortable(grid, {
-                animation: 150,
+                animation: 400, // 增加动画时长，带来延绵顺滑的呼吸感
+                easing: "cubic-bezier(0.25, 1, 0.5, 1)", // Apple 极具质感的硅胶阻尼缓动曲线
                 handle: '.drag-handle',
                 ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                forceFallback: true, // 极其关键！强制交予 JS 接管原生拖拽渲染引擎，完美释放阴影与旋转的高级 CSS 动画
+                fallbackTolerance: 3, // 鼠标轻微偏移 3 像素再吸附触发，防止误触
                 onEnd: function () {
                     const cards = document.querySelectorAll('.card');
                     const newOrder = Array.from(cards).map(card => card.getAttribute('data-id'));
