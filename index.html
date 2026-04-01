@@ -412,10 +412,13 @@
                     const delBtn = isCustom ? `<button class="del-btn" onclick="deleteTool('${tool.id}')">✕</button>` : '';
                     const iconHtml = getFavicon(tool.link, tool.name);
 
+                    // 针对 Perplexity 的特殊体验：并列打开验证码接收中控页
+                    const extraAction = tool.id === 'perplexity' ? `onclick="window.open('/mail.html', '_blank')"` : '';
+
                     card.innerHTML = `
                         <div class="drag-handle">⋮⋮</div>
                         ${delBtn}
-                        <a href="${tool.link}" target="_blank" rel="noopener" class="card-content">
+                        <a href="${tool.link}" target="_blank" rel="noopener" class="card-content" ${extraAction}>
                             <div class="card-top">
                                 <div class="icon">${iconHtml}</div>
                                 ${badgeHtml}
