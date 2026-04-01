@@ -364,7 +364,8 @@
         function getFavicon(url, name) {
             try {
                 const domain = new URL(url).hostname;
-                return `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=128" alt="${name} Logo">`;
+                // 替换为国内可直接访问的高清 Favicon 接口
+                return `<img src="https://api.iowen.cn/favicon/${domain}.png" alt="${name} Logo" onerror="this.onerror=null; this.src=''">`;
             } catch (e) {
                 return '🌐'; 
             }
