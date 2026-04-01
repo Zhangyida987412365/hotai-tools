@@ -33,7 +33,7 @@
         }
         .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; color: #fff; text-decoration: none;}
         .logo span { color: var(--primary); }
-        .actions { display: flex; gap: 10px; }
+        .actions { display: flex; gap: 10px; align-items: center; }
         
         button {
             background: var(--card); border: 1px solid var(--border); color: var(--text);
@@ -45,7 +45,7 @@
 
         /* 头部文案优化 */
         .toolbar { padding: 60px 5% 40px; text-align: center; }
-        h1 { font-size: 2.8rem; margin-bottom: 15px; letter-spacing: -1px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+        h1 { font-size: 2.8rem; margin-bottom: 15px; letter-spacing: -1px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;}
         .subtitle { color: var(--text-dim); margin-bottom: 30px; font-size: 1.1rem; }
         
         .search-box { max-width: 500px; margin: 0 auto 30px; position: relative; }
@@ -85,7 +85,8 @@
         .card:hover .drag-handle { opacity: 1; }
 
         .card-top { display: flex; align-items: center; margin-bottom: 12px; gap: 12px; }
-        .icon { width: 44px; height: 44px; background: #27272a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+        .icon { width: 44px; height: 44px; background: #27272a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; overflow: hidden; }
+        .icon img { width: 100%; height: 100%; object-fit: cover; }
 
         .rank-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; margin-left: auto; margin-right: 20px;}
         .rank-1 { background: #eab308; color: #000; }
@@ -123,110 +124,261 @@
 <body>
 
     <nav>
-        <a href="/" class="logo">AI <span>DASHBOARD</span></a>
+        <a href="/" class="logo" id="t_logo">AI <span>DASHBOARD</span></a>
         <div class="actions">
-            <button class="btn-primary" onclick="openModal()">+ Add Link</button>
+            <button id="langToggleBtn" onclick="toggleLanguage()" style="background:transparent; border:none; padding:8px;">🇺🇸 EN</button>
+            <button class="btn-primary" onclick="openModal()" id="t_addLink">+ Add Link</button>
         </div>
     </nav>
 
     <div class="toolbar">
-        <h1>Your Personal AI Startpage</h1>
-        <p class="subtitle">Organize your favorite AI tools. Drag to reorder. Data saves to your browser.</p>
+        <h1 id="t_title">Your Personal AI Startpage</h1>
+        <p class="subtitle" id="t_subtitle">Organize your favorite AI tools. Drag to reorder. Data saves to your browser.</p>
         
         <div class="search-box">
             <input type="text" id="search" placeholder="Search tool name (e.g. 'coding')..." oninput="render()">
         </div>
 
         <div class="filters" id="filters">
-            <button class="cat-btn active" onclick="filterCat('All')">All</button>
-            <button class="cat-btn" onclick="filterCat('Chat')">Chat</button>
-            <button class="cat-btn" onclick="filterCat('Code')">Code</button>
-            <button class="cat-btn" onclick="filterCat('Image')">Image</button>
-            <button class="cat-btn" onclick="filterCat('Video')">Video</button>
-            <button class="cat-btn" onclick="filterCat('Audio')">Audio</button>
+            <button class="cat-btn active" data-cat="All" onclick="filterCat('All')" id="cat_All">All</button>
+            <button class="cat-btn" data-cat="Chat" onclick="filterCat('Chat')" id="cat_Chat">Chat</button>
+            <button class="cat-btn" data-cat="Code" onclick="filterCat('Code')" id="cat_Code">Code</button>
+            <button class="cat-btn" data-cat="Image" onclick="filterCat('Image')" id="cat_Image">Image</button>
+            <button class="cat-btn" data-cat="Video" onclick="filterCat('Video')" id="cat_Video">Video</button>
+            <button class="cat-btn" data-cat="Audio" onclick="filterCat('Audio')" id="cat_Audio">Audio</button>
+            <button class="cat-btn" data-cat="Agent" onclick="filterCat('Agent')" id="cat_Agent">Agent</button>
         </div>
     </div>
 
     <div class="grid" id="grid">
         </div>
 
+    <!-- SEO: 静态链接供爬虫抓取 -->
+    <noscript>
+        <div style="display:none;">
+            <a href="https://chat.openai.com" title="ChatGPT">ChatGPT - The standard for AI chat</a>
+            <a href="https://claude.ai" title="Claude 3.5">Claude 3.5 - Best for coding</a>
+            <a href="https://chat.deepseek.com" title="DeepSeek">DeepSeek - Top open-source model</a>
+            <a href="https://gemini.google.com" title="Google Gemini">Google Gemini - Multimodal AI</a>
+            <a href="https://www.doubao.com" title="Doubao">Doubao (豆包) - ByteDance's popular AI assistant</a>
+            <a href="https://kimi.moonshot.cn" title="Kimi">Kimi - Long context processing AI</a>
+            <a href="https://tongyi.aliyun.com" title="Qwen">Qwen (通义千问) - Alibaba's robust AI</a>
+            <a href="https://yiyan.baidu.com" title="ERNIE">ERNIE (文心一言) - Baidu's AI chat</a>
+            <a href="https://grok.com" title="Grok">Grok - xAI's real-time model</a>
+            <a href="https://midjourney.com" title="Midjourney">Midjourney - Artistic image generator</a>
+            <a href="https://klingai.com" title="Kling AI">Kling AI - Incredible AI video generation</a>
+            <a href="https://www.perplexity.ai" title="Perplexity">Perplexity - AI Search Engine</a>
+            <a href="https://cursor.sh" title="Cursor">Cursor - AI-first Code Editor</a>
+            <a href="https://suno.com" title="Suno">Suno - Generate full songs</a>
+            <a href="https://runwayml.com" title="Runway">Runway - AI video editing</a>
+            <a href="https://elevenlabs.io" title="ElevenLabs">ElevenLabs - AI voice generator</a>
+            <a href="https://deepmind.google/technologies/gemini/" title="Antigravity">Antigravity - Google DeepMind's agentic AI</a>
+            <a href="https://www.anthropic.com/claude-code" title="Claude Code">Claude Code - Anthropic CLI agent</a>
+            <a href="https://github.com/features/copilot" title="GitHub Copilot">GitHub Copilot - AI developer tool</a>
+            <a href="https://gamma.app" title="Gamma">Gamma - AI presentation tool</a>
+            <a href="https://poe.com" title="Poe">Poe - Multi-bot chat aggregator</a>
+            <a href="https://v0.dev" title="v0">v0 by Vercel - Generate UI with AI</a>
+            <a href="https://huggingface.co" title="Hugging Face">Hugging Face - The AI community</a>
+            <a href="https://notebooklm.google.com" title="NotebookLM">NotebookLM - AI research & podcast</a>
+            <a href="https://civitai.com" title="Civitai">Civitai - AI image model community</a>
+        </div>
+    </noscript>
+
     <footer>
-        <p>&copy; 2025 HotAI.Tools. All data is stored locally on your device.</p>
-        <button onclick="resetDefaults()" style="margin-top:10px; font-size:12px; padding:4px 8px; opacity:0.5;">Reset Layout</button>
+        <p id="t_footer">&copy; 2025 HotAI.Tools. All data is stored locally on your device.</p>
+        <div style="margin-top:12px; font-size:14px; color:#a1a1aa;">
+            <span id="t_contact">Contact & Sponsorship:</span> <a href="mailto:yunfengyunyang@gmail.com" style="color:#8b5cf6; text-decoration:none;">yunfengyunyang@gmail.com</a>
+            <span style="margin: 0 10px; opacity:0.5;">|</span>
+            <a href="/mail.html" target="_blank" style="color:#8b5cf6; text-decoration:none;" id="t_mailLink">Perplexity Code Receiver</a>
+        </div>
+        <button onclick="resetDefaults()" id="t_resetLayout" style="margin-top:15px; font-size:12px; padding:4px 8px; opacity:0.5; background:transparent; border:1px solid #3f3f46;">Reset Layout</button>
     </footer>
 
     <div class="modal-overlay" id="addModal">
         <div class="modal">
-            <h2>Add Custom Shortcut</h2>
+            <h2 id="t_modalTitle">Add Custom Shortcut</h2>
             <div class="form-group">
-                <label>Name</label>
+                <label id="t_modalName">Name</label>
                 <input type="text" id="add-name" placeholder="e.g. My WordPress Admin">
             </div>
             <div class="form-group">
-                <label>URL</label>
+                <label id="t_modalLink">URL</label>
                 <input type="text" id="add-link" placeholder="https://...">
             </div>
             <div class="form-group">
-                <label>Category</label>
+                <label id="t_modalCat">Category</label>
                 <select id="add-cat">
                     <option value="Chat">Chat</option>
                     <option value="Code">Code</option>
                     <option value="Image">Image</option>
                     <option value="Video">Video</option>
                     <option value="Audio">Audio</option>
+                    <option value="Agent">Agent</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
             <div class="modal-actions">
-                <button onclick="closeModal()">Cancel</button>
-                <button class="btn-primary" onclick="addCustomTool()">Add to Dashboard</button>
+                <button onclick="closeModal()" id="t_modalCancel">Cancel</button>
+                <button class="btn-primary" onclick="addCustomTool()" id="t_modalSubmit">Add to Dashboard</button>
             </div>
         </div>
     </div>
 
     <script>
-        // === 1. 默认数据 (全英文，精选全球最火的) ===
-        // 注意：这里我去掉了纯中文工具，DeepSeek因为全球爆火保留了，描述改成了英文
+        // === 0. i18n 多语言配置 ===
+        const translations = {
+            en: {
+                logo: "AI <span>DASHBOARD</span>",
+                addLink: "+ Add Link",
+                title: "Your Personal AI Startpage",
+                subtitle: "Organize your favorite AI tools. Drag to reorder. Data saves to your browser.",
+                searchPlaceholder: "Search tool name (e.g. 'coding')...",
+                footer: "&copy; 2025 HotAI.Tools. All data is stored locally on your device.",
+                resetLayout: "Reset Layout",
+                modalTitle: "Add Custom Shortcut",
+                modalName: "Name",
+                modalLink: "URL",
+                modalCat: "Category",
+                modalCancel: "Cancel",
+                modalSubmit: "Add to Dashboard",
+                cats: { "All": "All", "Chat": "Chat", "Code": "Code", "Image": "Image", "Video": "Video", "Audio": "Audio", "Agent": "Agent", "Other": "Other" },
+                badge: { "top1": "TOP 1", "top2": "TOP 2", "hot": "HOT", "new": "NEW" },
+                myLink: "My Link",
+                contact: "Contact & Sponsorship:",
+                mailLink: "Perplexity Code Receiver"
+            },
+            zh: {
+                logo: "AI <span>导航页</span>",
+                addLink: "+ 添加工具",
+                title: "你的专属 AI 导航页",
+                subtitle: "整理你最爱的 AI 工具。拖拽排序。数据保存在本地浏览器中。",
+                searchPlaceholder: "搜索工具名称（如 '编程'）...",
+                footer: "&copy; 2025 HotAI.Tools. 你的数据仅保存在本地设备上。",
+                resetLayout: "重置布局与数据",
+                modalTitle: "添加自定义快捷方式",
+                modalName: "名称",
+                modalLink: "网址 URL",
+                modalCat: "分类",
+                modalCancel: "取消",
+                modalSubmit: "添加到面板",
+                cats: { "All": "全部", "Chat": "对话", "Code": "编程", "Image": "图像", "Video": "视频", "Audio": "音频", "Agent": "智能体", "Other": "其他" },
+                badge: { "top1": "榜首", "top2": "次席", "hot": "热门", "new": "新锐" },
+                myLink: "我的工具",
+                contact: "联系与赞助合作：",
+                mailLink: "Perplexity 验证码接收端"
+            }
+        };
+
+        // 如果 localStorage 中没有语言偏好，则根据浏览器首选语言判断
+        let currentLang = localStorage.getItem('hotai_lang');
+        if (!currentLang) {
+            const browserLang = navigator.language || navigator.userLanguage;
+            currentLang = browserLang.toLowerCase().includes('zh') ? 'zh' : 'en';
+        }
+
+        // === 1. 初始化数据 ===
         const defaultTools = [
-            { id: "gpt", name: "ChatGPT", desc: "The standard for AI chat. Great for general writing.", icon: "🧠", cat: "Chat", link: "https://chat.openai.com", badge: "TOP 1", badgeClass: "rank-1" },
-            { id: "claude", name: "Claude 3.5", desc: "Best for coding & nuanced writing. Human-like.", icon: "📜", cat: "Chat", link: "https://claude.ai", badge: "TOP 2", badgeClass: "rank-2" },
-            { id: "deepseek", name: "DeepSeek", desc: "Top open-source model. Excellent at math & code.", icon: "🦈", cat: "Code", link: "https://chat.deepseek.com", badge: "HOT", badgeClass: "rank-hot" },
-            { id: "gemini", name: "Google Gemini", desc: "Multimodal AI. Deep integration with Google ecosystem.", icon: "💎", cat: "Chat", link: "https://gemini.google.com" },
-            { id: "midjourney", name: "Midjourney", desc: "The best artistic image generator currently available.", icon: "🎨", cat: "Image", link: "https://midjourney.com" },
-            { id: "perplexity", name: "Perplexity", desc: "AI Search Engine. Better than Google for answers.", icon: "🔍", cat: "Chat", link: "https://www.perplexity.ai" },
-            { id: "cursor", name: "Cursor", desc: "AI-first Code Editor (VS Code Fork).", icon: "🖱️", cat: "Code", link: "https://cursor.sh" },
-            { id: "suno", name: "Suno", desc: "Generate full songs with lyrics in seconds.", icon: "🎵", cat: "Audio", link: "https://suno.com" },
-            { id: "runway", name: "Runway", desc: "Professional AI video editing suite.", icon: "🎥", cat: "Video", link: "https://runwayml.com" },
-            { id: "elevenlabs", name: "ElevenLabs", desc: "Most realistic AI text-to-speech voice generator.", icon: "🔊", cat: "Audio", link: "https://elevenlabs.io" }
+            { id: "gpt", name: "ChatGPT", desc: "The standard for AI chat. Great for general writing.", descZh: "AI 对话的行业标准，适合日常写作与问答。", cat: "Chat", link: "https://chat.openai.com", badge: "top1", badgeClass: "rank-1" },
+            { id: "claude", name: "Claude 3.5", desc: "Best for coding & nuanced writing. Human-like.", descZh: "代码编写和深度长文的王者，具有极强的类人推理能力。", cat: "Chat", link: "https://claude.ai", badge: "top2", badgeClass: "rank-2" },
+            { id: "deepseek", name: "DeepSeek", desc: "Top open-source model. Excellent at math & code.", descZh: "顶尖开源模型工具，在数学和编程方面极其出色且免费。", cat: "Code", link: "https://chat.deepseek.com", badge: "hot", badgeClass: "rank-hot" },
+            { id: "antigravity", name: "Antigravity", desc: "DeepMind's powerful agentic AI coding assistant.", descZh: "Google DeepMind 研发的强大 Agentic 代码助手，能够自主执行复杂任务。", cat: "Agent", link: "https://deepmind.google/technologies/gemini/", badge: "new", badgeClass: "rank-hot" },
+            { id: "claudecode", name: "Claude Code", desc: "Anthropic's CLI-based AI agent to automate terminal workflow.", descZh: "Anthropic 推出的强大命令行 AI 智能体，直接在终端接管编程工作流。", cat: "Agent", link: "https://www.anthropic.com/claude-code", badge: "new", badgeClass: "rank-hot" },
+            { id: "gemini", name: "Google Gemini", desc: "Multimodal AI. Deep integration with Google ecosystem.", descZh: "多模态巨头，与 Google 生态深度集成。", cat: "Chat", link: "https://gemini.google.com" },
+            { id: "doubao", name: "Doubao (豆包)", desc: "ByteDance's popular AI assistant. Fast and accessible.", descZh: "字节跳动出品的最火爆 AI 助手，国内极高的人气与响应速度。", cat: "Chat", link: "https://www.doubao.com" },
+            { id: "kimi", name: "Kimi", desc: "Famous for processing extremely long context and documents.", descZh: "月之暗面出品，当前处理超长文本和精读长文档体验最好的 AI 之一。", cat: "Chat", link: "https://kimi.moonshot.cn" },
+            { id: "qwen", name: "Qwen (通义千问)", desc: "Alibaba's robust AI model, excellent at multimodal tasks.", descZh: "阿里巴巴的国产大模型之光，开源及多模态能力极其强劲。", cat: "Chat", link: "https://tongyi.aliyun.com" },
+            { id: "ernie", name: "ERNIE (文心一言)", desc: "Baidu's AI chat, seamlessly integrated with search.", descZh: "百度推出的全能型 AI 助手，具备搜索和画图能力。", cat: "Chat", link: "https://yiyan.baidu.com" },
+            { id: "grok", name: "Grok", desc: "xAI's model integrated into X (Twitter). Access to real-time data.", descZh: "马斯克 xAI 旗下猛将，特点是无惧审查且直连 X 平台的实时数据源。", cat: "Chat", link: "https://grok.com" },
+            { id: "midjourney", name: "Midjourney", desc: "The best artistic image generator currently available.", descZh: "目前效果最好的艺术图像生成工具。", cat: "Image", link: "https://midjourney.com" },
+            { id: "kling", name: "Kling AI", desc: "Incredible AI video generation model by Kuaishou.", descZh: "快手推出的颠覆性可灵 AI 视频生成大模型，效果震撼世界。", cat: "Video", link: "https://klingai.com", badge: "hot", badgeClass: "rank-hot" },
+            { id: "perplexity", name: "Perplexity", desc: "AI Search Engine. Better than Google for answers.", descZh: "AI 搜索引擎，直接给出答案并附带来源。", cat: "Chat", link: "https://www.perplexity.ai" },
+            { id: "cursor", name: "Cursor", desc: "AI-first Code Editor (VS Code Fork).", descZh: "AI 优先的代码编辑器，程序员的神器。", cat: "Code", link: "https://cursor.sh" },
+            { id: "copilot", name: "GitHub Copilot", desc: "The world's most widely adopted AI developer tool by OpenAI.", descZh: "全球最普及的 AI 编程助手，基于强大的模型深度集成在各大 IDE 中。", cat: "Code", link: "https://github.com/features/copilot" },
+            { id: "gamma", name: "Gamma", desc: "Generate stunning presentations and webpages using AI.", descZh: "排版极佳的 AI 一键生成 PPT 和演示文稿神器。", cat: "Other", link: "https://gamma.app" },
+            { id: "poe", name: "Poe", desc: "Quora's multi-bot aggregator to use dozens of AIs in one place.", descZh: "Quora 出品的聚合平台，能在一个地方切换并使用几十种顶尖 AI 模型。", cat: "Chat", link: "https://poe.com" },
+            { id: "suno", name: "Suno", desc: "Generate full songs with lyrics in seconds.", descZh: "音乐生成器，几秒内通过文字生成带人声的歌曲。", cat: "Audio", link: "https://suno.com" },
+            { id: "runway", name: "Runway", desc: "Professional AI video editing suite.", descZh: "专业的 AI 视频生成和编辑套件。", cat: "Video", link: "https://runwayml.com" },
+            { id: "elevenlabs", name: "ElevenLabs", desc: "Most realistic AI text-to-speech voice generator.", descZh: "最逼真的 AI 文本转语音工具。", cat: "Audio", link: "https://elevenlabs.io" },
+            { id: "v0", name: "v0.dev", desc: "Generate flawless react UI and web apps with simple prompts.", descZh: "Vercel 出品的当红炸子鸡，一句话生成可运行的精美 Web 界面。", cat: "Code", link: "https://v0.dev", badge: "hot", badgeClass: "rank-hot" },
+            { id: "huggingface", name: "Hugging Face", desc: "The GitHub of AI. Community for models and datasets.", descZh: "全球最大的 AI 开源社区与模型库，AI 领域的 GitHub。", cat: "Other", link: "https://huggingface.co" },
+            { id: "notebooklm", name: "NotebookLM", desc: "Google's AI tool to turn your documents into engaging podcasts.", descZh: "Google 出品的爆款研究助手，能把长文档和论文直接转成双人播客对谈。", cat: "Audio", link: "https://notebooklm.google.com", badge: "hot", badgeClass: "rank-hot" },
+            { id: "civitai", name: "Civitai", desc: "The world's largest AI art and Stable Diffusion models community.", descZh: "全球最大的开源 AI 绘画（Stable Diffusion）模型库与分享社区（C站）。", cat: "Image", link: "https://civitai.com" }
         ];
 
-        // === 2. 核心逻辑 ===
         let customTools = JSON.parse(localStorage.getItem('my_custom_tools')) || [];
-        // 如果用户以前没存过顺序，就用默认的ID列表
         let savedOrder = JSON.parse(localStorage.getItem('my_tools_order')) || defaultTools.map(t => t.id);
         let currentCat = 'All';
 
         function init() {
+            applyLanguage();
             render();
             initSortable();
         }
 
-        // 核心：合并默认工具和自定义工具，并按保存的顺序排序
+        // --- 多语言逻辑 ---
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+            localStorage.setItem('hotai_lang', currentLang);
+            applyLanguage();
+            render();
+        }
+
+        function applyLanguage() {
+            const t = translations[currentLang];
+            document.getElementById('langToggleBtn').innerHTML = currentLang === 'en' ? '🇨🇳 中 / EN' : '🇺🇸 EN / 中';
+            
+            document.getElementById('t_logo').innerHTML = t.logo;
+            document.getElementById('t_addLink').innerText = t.addLink;
+            document.getElementById('t_title').innerText = t.title;
+            document.getElementById('t_subtitle').innerText = t.subtitle;
+            document.getElementById('search').placeholder = t.searchPlaceholder;
+            document.getElementById('t_footer').innerHTML = t.footer;
+            document.getElementById('t_resetLayout').innerText = t.resetLayout;
+            if(document.getElementById('t_contact')) document.getElementById('t_contact').innerText = t.contact;
+            if(document.getElementById('t_mailLink')) document.getElementById('t_mailLink').innerText = t.mailLink;
+
+            document.getElementById('t_modalTitle').innerText = t.modalTitle;
+            document.getElementById('t_modalName').innerText = t.modalName;
+            document.getElementById('t_modalLink').innerText = t.modalLink;
+            document.getElementById('t_modalCat').innerText = t.modalCat;
+            document.getElementById('t_modalCancel').innerText = t.modalCancel;
+            document.getElementById('t_modalSubmit').innerText = t.modalSubmit;
+
+            document.getElementById('cat_All').innerText = t.cats['All'];
+            document.getElementById('cat_Chat').innerText = t.cats['Chat'];
+            document.getElementById('cat_Code').innerText = t.cats['Code'];
+            document.getElementById('cat_Image').innerText = t.cats['Image'];
+            document.getElementById('cat_Video').innerText = t.cats['Video'];
+            document.getElementById('cat_Audio').innerText = t.cats['Audio'];
+            document.getElementById('cat_Agent').innerText = t.cats['Agent'];
+
+            const select = document.getElementById('add-cat');
+            Array.from(select.options).forEach(opt => {
+                opt.text = t.cats[opt.value] || opt.value;
+            });
+            
+            document.documentElement.lang = currentLang;
+        }
+
+        // 获取 favicon (优化了 alt 标签 SEO)
+        function getFavicon(url, name) {
+            try {
+                const domain = new URL(url).hostname;
+                return `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=128" alt="${name} Logo">`;
+            } catch (e) {
+                return '🌐'; 
+            }
+        }
+
         function getSortedTools() {
             let all = [...defaultTools, ...customTools];
-            
-            // 按照 savedOrder 的顺序重排
             all.sort((a, b) => {
                 let idxA = savedOrder.indexOf(a.id.toString());
                 let idxB = savedOrder.indexOf(b.id.toString());
-                
-                // 如果是新加的工具（还没在顺序表里），放到最前面
                 if (idxA === -1) idxA = -1;
                 if (idxB === -1) idxB = -1;
-                
-                // 都在列表里，按索引比；都不在，按时间比；一个在，在的排后面
                 if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-                if (idxA === -1 && idxB !== -1) return 1; // 新工具放后面(或前面，看你想怎么逻辑)
+                if (idxA === -1 && idxB !== -1) return 1;
                 if (idxA !== -1 && idxB === -1) return -1;
                 return 0;
             });
@@ -238,37 +390,38 @@
             grid.innerHTML = '';
             const searchVal = document.getElementById('search').value.toLowerCase();
             const tools = getSortedTools();
+            const t = translations[currentLang];
 
-            tools.forEach((t) => {
-                const matchCat = currentCat === 'All' || t.cat === currentCat;
-                const matchSearch = t.name.toLowerCase().includes(searchVal) || t.desc.toLowerCase().includes(searchVal);
+            tools.forEach((tool) => {
+                const matchCat = currentCat === 'All' || tool.cat === currentCat;
+                const desc = currentLang === 'zh' ? (tool.descZh || tool.desc) : tool.desc; 
+                const matchSearch = tool.name.toLowerCase().includes(searchVal) || desc.toLowerCase().includes(searchVal);
 
                 if(matchCat && matchSearch) {
-                    const isCustom = !!t.isCustom;
+                    const isCustom = !!tool.isCustom;
                     const card = document.createElement('div');
                     card.className = 'card';
-                    card.setAttribute('data-id', t.id);
+                    card.setAttribute('data-id', tool.id);
 
-                    // 徽章
-                    let badgeHtml = t.badge ? `<span class="rank-badge ${t.badgeClass}">${t.badge}</span>` : '';
+                    let badgeText = tool.badge && translations[currentLang].badge[tool.badge] ? translations[currentLang].badge[tool.badge] : tool.badge;
+                    let badgeHtml = badgeText ? `<span class="rank-badge ${tool.badgeClass}">${badgeText}</span>` : '';
                     
-                    // 标签
-                    let tagsHtml = `<span class="tag">${t.cat}</span>`;
-                    if(isCustom) tagsHtml += `<span class="tag user">My Link</span>`;
+                    let tagsHtml = `<span class="tag">${t.cats[tool.cat] || tool.cat}</span>`;
+                    if(isCustom) tagsHtml += `<span class="tag user">${t.myLink}</span>`;
 
-                    // 删除按钮
-                    const delBtn = isCustom ? `<button class="del-btn" onclick="deleteTool('${t.id}')">✕</button>` : '';
+                    const delBtn = isCustom ? `<button class="del-btn" onclick="deleteTool('${tool.id}')">✕</button>` : '';
+                    const iconHtml = getFavicon(tool.link, tool.name);
 
                     card.innerHTML = `
                         <div class="drag-handle">⋮⋮</div>
                         ${delBtn}
-                        <a href="${t.link}" target="_blank" rel="noopener" class="card-content">
+                        <a href="${tool.link}" target="_blank" rel="noopener" class="card-content">
                             <div class="card-top">
-                                <div class="icon">${t.icon}</div>
+                                <div class="icon">${iconHtml}</div>
                                 ${badgeHtml}
                             </div>
-                            <div class="card-title">${t.name}</div>
-                            <div class="card-desc">${t.desc}</div>
+                            <div class="card-title">${tool.name}</div>
+                            <div class="card-desc">${desc}</div>
                             <div class="tags">${tagsHtml}</div>
                         </a>
                     `;
@@ -284,7 +437,6 @@
                 handle: '.drag-handle',
                 ghostClass: 'sortable-ghost',
                 onEnd: function () {
-                    // 拖拽结束后，获取新的DOM顺序并保存
                     const cards = document.querySelectorAll('.card');
                     const newOrder = Array.from(cards).map(card => card.getAttribute('data-id'));
                     localStorage.setItem('my_tools_order', JSON.stringify(newOrder));
@@ -293,11 +445,10 @@
             });
         }
 
-        // === 交互逻辑 ===
         function filterCat(cat) {
             currentCat = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText === cat || (cat === 'All' && btn.innerText === 'All'));
+                btn.classList.toggle('active', btn.getAttribute('data-cat') === cat);
             });
             render();
         }
@@ -310,37 +461,36 @@
             let link = document.getElementById('add-link').value;
             const cat = document.getElementById('add-cat').value;
 
-            if(!name || !link) return alert("Please enter a name and URL.");
+            if(!name || !link) return alert(currentLang === 'zh' ? "请输入名称和地址。" : "Please enter a name and URL.");
             if(!link.startsWith('http')) link = 'https://' + link;
 
             const newTool = {
                 id: "custom_" + Date.now(),
                 name: name,
-                desc: "Custom Shortcut",
-                icon: "📌",
+                desc: currentLang === 'zh' ? '自定义工具' : "Custom Shortcut",
+                descZh: '自定义工具',
                 link: link,
                 cat: cat,
                 isCustom: true
             };
 
-            customTools.unshift(newTool); // 加到数组开头
-            savedOrder.unshift(newTool.id); // 加到排序开头
+            customTools.unshift(newTool);
+            savedOrder.unshift(newTool.id);
 
             localStorage.setItem('my_custom_tools', JSON.stringify(customTools));
             localStorage.setItem('my_tools_order', JSON.stringify(savedOrder));
             
             closeModal();
             render();
-            // 清空表单
             document.getElementById('add-name').value = '';
             document.getElementById('add-link').value = '';
         }
 
         function deleteTool(id) {
-            if(confirm("Remove this shortcut?")) {
+            const confirmMsg = currentLang === 'zh' ? "确定删除此工具吗？" : "Remove this shortcut?";
+            if(confirm(confirmMsg)) {
                 customTools = customTools.filter(t => t.id !== id);
                 savedOrder = savedOrder.filter(oid => oid !== id);
-                
                 localStorage.setItem('my_custom_tools', JSON.stringify(customTools));
                 localStorage.setItem('my_tools_order', JSON.stringify(savedOrder));
                 render();
@@ -348,7 +498,8 @@
         }
 
         function resetDefaults() {
-            if(confirm("Reset all layout and delete custom tools?")) {
+            const confirmMsg = currentLang === 'zh' ? "将重置所有布局并删除自定义工具，确定吗？" : "Reset all layout and delete custom tools?";
+            if(confirm(confirmMsg)) {
                 localStorage.removeItem('my_custom_tools');
                 localStorage.removeItem('my_tools_order');
                 location.reload();

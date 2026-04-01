@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail 验证码接收终端</title>
+    <!-- Google Fonts for Material Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', 'Google Sans', system-ui, -apple-system, sans-serif;
+            background: #202124; /* Google Dark Mode Background */
+            color: #bdc1c6;      /* Google Dark Text */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 650px;
+            background: #282a2d; /* Google Dark Surface */
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Soft dark mode borders */
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 顶部彩色横条纹，致敬 Google 四色 */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4285f4 0%, #4285f4 25%, #ea4335 25%, #ea4335 50%, #fbbc05 50%, #fbbc05 75%, #34a853 75%, #34a853 100%);
+        }
+
+        .header-branding {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .gmail-icon {
+            width: 50px;
+            height: 40px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: #e8eaed; /* Lighter text for heading */
+        }
+
+        .status {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            color: #9aa0a6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 50px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #34a853; /* Google Green */
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 12px rgba(52, 168, 83, 0.6);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 168, 83, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(52, 168, 83, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 168, 83, 0); }
+        }
+
+        .code-card {
+            background: #202124;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #ea4335; /* Google Red (Gmail Red) */
+            border-radius: 4px 0 0 4px;
+            transition: width 0.2s;
+        }
+
+        .code-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            background: #2a2b2f;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .code-card:hover::before {
+            width: 6px;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sender {
+            font-size: 0.9rem;
+            color: #d2e3fc; /* Google specific light blue */
+            background: rgba(66, 133, 244, 0.15); /* #4285F4 */
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .time {
+            font-size: 0.85rem;
+            color: #9aa0a6;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .time::before {
+            content: '🕒';
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .the-code {
+            font-family: 'Roboto', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 8px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: all;
+        }
+        
+        .the-code:hover {
+            color: #8ab4f8; /* Google Blue Light */
+            text-shadow: 0 0 25px rgba(138, 180, 248, 0.4);
+            transform: scale(1.02);
+        }
+
+        .the-code:active {
+            transform: scale(0.98);
+        }
+
+        .copy-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #8ab4f8;
+            margin-top: -15px;
+            margin-bottom: 25px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: 500;
+        }
+
+        .code-card:hover .copy-hint {
+            opacity: 1;
+        }
+
+        .subject {
+            font-size: 0.95rem;
+            color: #bdc1c6;
+            text-align: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            line-height: 1.5;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 头部采用经典的 Google 风格排列 -->
+        <div class="header-branding">
+            <!-- 纯正的 Gmail 官方图标 SVG 矢量图 -->
+            <svg class="gmail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M20,4H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z" fill="#eceff1" />
+                <path d="M22,6L12,13L2,6V4l10,7l10-7V6z" fill="#ea4335" />
+                <path d="M20,4l-8,5.4L4,4H2v2l10,6.7L22,6V4H20z" fill="#c62828" />
+            </svg>
+            <h1>Gmail 验证码终端</h1>
+        </div>
+
+        <div class="status">
+            <span class="dot"></span> 正在实时监听 Google Inbox，请求经由 Vercel...
+        </div>
+        
+        <div id="codes-container">
+            <!-- 验证码卡片将动态插入到这里 -->
+            <div style="text-align: center; color: #5f6368; padding: 20px;">
+                正在加载最新的验证码...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 自动获取验证码
+        async function fetchCodes() {
+            try {
+                const response = await fetch('/api/codes');
+                const data = await response.json();
+                
+                if(data.status === 'success') {
+                    renderCodes(data.codes);
+                } else {
+                    console.error("获取失败:", data.message);
+                    document.getElementById('codes-container').innerHTML = 
+                        '<div style="text-align:center; color:#ef4444; padding:20px;">后端报错：' + escapeHTML(data.message) + '</div>';
+                }
+            } catch (error) {
+                console.error("无法连接到后台接口", error);
+            }
+        }
+
+        // 渲染收到的验证码卡片
+        function renderCodes(codes) {
+            const container = document.getElementById('codes-container');
+            
+            if (!codes || codes.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #5f6368; padding: 20px;">暂无最新的验证码信息</div>';
+                return;
+            }
+
+            container.innerHTML = ''; 
+            
+            codes.forEach(mail => {
+                const codeDisplay = mail.code ? mail.code : "未识别数字";
+                
+                const card = document.createElement('div');
+                card.className = 'code-card';
+                card.innerHTML = `
+                    <div class="code-header">
+                        <span class="sender">${escapeHTML(extractNameFromEmail(mail.from))}</span>
+                        ${mail.date ? `<span class="time">${escapeHTML(mail.date)}</span>` : ''}
+                    </div>
+                    <div class="the-code" onclick="copyCode('${codeDisplay}')" title="点击一键复制">${codeDisplay}</div>
+                    <div class="copy-hint">点击上方数字即可复制此验证码</div>
+                    <div class="subject">${escapeHTML(mail.subject)}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function copyCode(code) {
+            if(code === "未识别数字") return;
+            navigator.clipboard.writeText(code).then(() => {
+                if (navigator.vibrate) navigator.vibrate(50);
+                alert(`安全验证码 ${code} 已复制到剪贴板！`);
+            });
+        }
+
+        function extractNameFromEmail(fromStr) {
+            if(!fromStr) return "未知收件源";
+            const match = fromStr.match(/^([^<]+)/);
+            return match ? match[1].trim() : fromStr;
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+
+        fetchCodes();
+        setInterval(fetchCodes, 10000);
+
+    </script>
+</body>
+</html>
