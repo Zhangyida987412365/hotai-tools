@@ -69,8 +69,10 @@ def get_verification_codes():
                 date_str = msg.get("Date", "")
                 try:
                     from email.utils import parsedate_to_datetime
+                    from datetime import timezone, timedelta
                     dt = parsedate_to_datetime(date_str)
-                    formatted_time = dt.astimezone().strftime("%m-%d %H:%M:%S")
+                    bj_tz = timezone(timedelta(hours=8))
+                    formatted_time = dt.astimezone(bj_tz).strftime("%m-%d %H:%M:%S")
                 except Exception:
                     formatted_time = date_str
                 
